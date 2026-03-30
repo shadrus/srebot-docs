@@ -9,8 +9,8 @@ SREBot agent settings can be specified using **Environment Variables (Env Vars)*
 | `TELEGRAM_BOT_TOKEN` | Provided by @BotFather. | `""` |
 | `TELEGRAM_CHANNEL_ID` | Telegram Chat ID designating the incident channel. | `0` |
 | `SAAS_AGENT_TOKEN` | Secure token linking the agent to your SREBot Dashboard. | `""` |
-| `SAAS_WS_URL` | Polling WebSocket URL for the SREBot SaaS backend. | `ws://localhost:8000/api/v1/agent/connect` |
-| `REDIS_URL` | Redis standalone connection string to power deduplication. | `redis://localhost:6379/0` |
+| `SAAS_WS_URL` | Polling WebSocket URL for the SREBot SaaS backend. | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
+| `REDIS_URL` | Redis standalone connection string to power deduplication. | `redis://srebot-redis:6379/0` |
 
 ## AI Logic (LLM) & Deduplication Configuration
 

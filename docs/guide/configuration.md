@@ -9,8 +9,8 @@
 | `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather. | `""` |
 | `TELEGRAM_CHANNEL_ID` | Идентификатор целевого чата/канала для рассылки. | `0` |
 | `SAAS_AGENT_TOKEN` | Секретный токен для связи с SREBot Дашбордом. | `""` |
-| `SAAS_WS_URL` | WebSocket URL бэкенда платформы. | `ws://localhost:8000/api/v1/agent/connect` |
-| `REDIS_URL` | URL подключения к Redis для дедупликации алертов. | `redis://localhost:6379/0` |
+| `SAAS_WS_URL` | WebSocket URL бэкенда платформы. | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
+| `REDIS_URL` | URL подключения к Redis для дедупликации алертов. | `redis://srebot-redis:6379/0` |
 
 ## Поведение AI (LLM) и парсера
 

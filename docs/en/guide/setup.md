@@ -21,7 +21,7 @@ SREBot supplies a standardized Helm Chart specifically wrapping the operational 
 
 1. Add the remote SREBot registry:
 ```bash
-helm repo add srebot https://charts.srebot.domain
+helm repo add srebot https://shadrus.github.io/ai-abservability-bot
 helm repo update
 ```
 
@@ -43,7 +43,7 @@ targets:
 3. Execute the target chart deployment:
 
 ```bash
-helm install srebot-agent srebot/srebot-agent -f values.yaml --namespace monitoring
+helm install srebot-agent srebot/ai-observability-bot -f values.yaml --namespace monitoring
 ```
 
 ## How Initializer Flow Functions

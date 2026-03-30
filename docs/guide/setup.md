@@ -21,7 +21,7 @@ SREBot имеет готовый Helm Chart для удобного развер
 
 1. Добавьте репозиторий SREBot:
 ```bash
-helm repo add srebot https://charts.srebot.domain
+helm repo add srebot https://shadrus.github.io/ai-abservability-bot
 helm repo update
 ```
 
@@ -43,7 +43,7 @@ targets:
 3. Выполните установку (deployment):
 
 ```bash
-helm install srebot-agent srebot/srebot-agent -f values.yaml --namespace monitoring
+helm install srebot-agent srebot/ai-observability-bot -f values.yaml --namespace monitoring
 ```
 
 ## Как бот начнет работу?
