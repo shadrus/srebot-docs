@@ -11,7 +11,11 @@ RUN npm run docs:build
 # Serve via lightweight Nginx
 FROM nginx:1.27-alpine
 
-COPY --from=builder /app/docs/.vitepress/dist /usr/share/nginx/html
+# Copy custom nginx configuration to handle cleanUrls
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Serve files directly in the /docs sub-directory to match the router's base and Traefik's PathPrefix
+COPY --from=builder /app/docs/.vitepress/dist /usr/share/nginx/html/docs
 
 EXPOSE 80
 
