@@ -1,0 +1,19 @@
+{
+  "name": "srebot-docs",
+  "version": "1.0.0",
+  "description": "SREBot Documentation Site",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "mermaid": "^11.13.0",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}
