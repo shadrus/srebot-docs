@@ -20,7 +20,8 @@ export default withMermaid(
       themeConfig: {
         nav: [
           { text: 'Главная', link: '/' },
-          { text: 'Руководство', link: '/guide/introduction' }
+          { text: 'Руководство', link: '/guide/introduction' },
+          { text: 'Вернуться на сайт', link: 'https://srebot.site360.tech' }
         ],
         sidebar: [
           {
@@ -53,7 +54,8 @@ export default withMermaid(
       themeConfig: {
         nav: [
           { text: 'Home', link: '/en/' },
-          { text: 'Guide', link: '/en/guide/introduction' }
+          { text: 'Guide', link: '/en/guide/introduction' },
+          { text: 'Back to Site', link: 'https://srebot.site360.tech' }
         ],
         sidebar: [
           {
