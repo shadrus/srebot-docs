@@ -20,6 +20,7 @@ SREBot agent settings can be specified using **Environment Variables (Env Vars)*
 | `LLM_MAX_ITERATIONS` | System limit restricting infinite tool-call loops by the AI. | `10` |
 | `ALERT_FINGERPRINT_TTL` | Lifecycle TTL (in seconds). Firing alerts mapping identical fingerprint strings natively condense into single parent trees prior to expiration. | `86400` (24h) |
 | `BOT_CONTAINER_NAME` | SREBot pod internal container label (forces isolation against reading its own logs inside Elasticsearch). | `ai-observability-bot` |
+| `IMAGE_REPOSITORY` | Container image registry path. | `ghcr.io/shadrus/srebot` |
 
 ## Advanced YAML Bindings (`config.yml` / Helm `values.yaml`)
 
