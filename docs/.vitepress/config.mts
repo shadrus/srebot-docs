@@ -7,9 +7,6 @@ export default withMermaid(
     title: "SREBot",
     description: "Официальная документация платформы SREBot",
     cleanUrls: true,
-    rewrites: {
-      '/': '/guide/introduction'
-    },
     themeConfig: {
       logo: '/logo.svg',
       search: {
@@ -22,7 +19,6 @@ export default withMermaid(
       lang: 'ru',
       themeConfig: {
         nav: [
-          { text: 'Главная', link: '/' },
           { text: 'Руководство', link: '/guide/introduction' },
           { text: 'Вернуться на сайт', link: 'https://srebot.site360.tech' }
         ],
@@ -58,7 +54,6 @@ export default withMermaid(
       description: 'Official SREBot Platform Documentation',
       themeConfig: {
         nav: [
-          { text: 'Home', link: '/en/' },
           { text: 'Guide', link: '/en/guide/introduction' },
           { text: 'Back to Site', link: 'https://srebot.site360.tech' }
         ],
