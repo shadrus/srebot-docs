@@ -1,14 +1,16 @@
 ---
-layout: dummy
+layout: false
+head:
+  - - meta
+    - http-equiv: refresh
+      content: 0; url=/docs/en/guide/introduction
 ---
+
+# Redirecting...
 
 <script setup>
 import { onMounted } from 'vue'
-import { useRouter } from 'vitepress'
-
-const { go } = useRouter()
-
 onMounted(() => {
-  go('/en/guide/introduction')
+  window.location.replace('/docs/en/guide/introduction')
 })
 </script>
