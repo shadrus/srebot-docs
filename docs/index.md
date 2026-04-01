@@ -10,8 +10,8 @@ hero:
       text: Начать работу
       link: /guide/introduction
     - theme: alt
-      text: Наш Github
-      link: https://github.com/shadrus
+      text: GitHub
+      link: https://github.com/shadrus/srebot
   image:
     src: /logo.svg
     alt: SREBot

@@ -7,8 +7,11 @@ export default withMermaid(
     title: "SREBot",
     description: "Официальная документация платформы SREBot",
     cleanUrls: true,
+    rewrites: {
+      '/': '/guide/introduction'
+    },
     themeConfig: {
-      logo: '/logo.svg', // Assuming we might add a logo here
+      logo: '/logo.svg',
       search: {
         provider: 'local'
       }
@@ -36,6 +39,7 @@ export default withMermaid(
             items: [
               { text: 'Веб-дашборд', link: '/guide/dashboard' },
               { text: 'Telegram бот', link: '/guide/bot-usage' },
+              { text: 'Настройка Telegram', link: '/guide/telegram-setup' },
               { text: 'Настройка Slack', link: '/guide/slack-setup' },
               { text: 'Форматирование алертов', link: '/guide/alert-formatting' },
               { text: 'Настройки бота (Env/YAML)', link: '/guide/configuration' }
@@ -72,6 +76,7 @@ export default withMermaid(
             items: [
               { text: 'Web Dashboard', link: '/en/guide/dashboard' },
               { text: 'Telegram Bot', link: '/en/guide/bot-usage' },
+              { text: 'Telegram Setup', link: '/en/guide/telegram-setup' },
               { text: 'Slack Setup', link: '/en/guide/slack-setup' },
               { text: 'Alert Formatting', link: '/en/guide/alert-formatting' },
               { text: 'Bot Configuration', link: '/en/guide/configuration' }

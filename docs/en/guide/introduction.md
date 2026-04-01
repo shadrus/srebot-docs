@@ -33,3 +33,11 @@ sequenceDiagram
 - **Intuitive Web Dashboard:** A robust UI provides transparent auditing covering SREBot's active inference pipelines.
 
 Check out the [Getting Started](/en/guide/setup) section to deploy the Helm charts.
+
+## Open Source
+
+The SREBot agent (the component deployed in your infrastructure) is **fully open-source** and available on GitHub:
+
+👉 [github.com/shadrus/srebot](https://github.com/shadrus/srebot)
+
+You can independently inspect the source code, verify that no unauthorized actions take place, and build your own Docker images from source if required.

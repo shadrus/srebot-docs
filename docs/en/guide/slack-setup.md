@@ -70,6 +70,10 @@ The bot won't see any messages unless it's explicitly added to the channel:
 
 ## How It Works
 
-- **Automated Analysis**: If the bot is in a channel and has `channels:history` permissions, it will automatically pick up any messages matching the Alertmanager format and start analyzing them.
-- **Mentions**: You can also mention the bot (`@SREBot`) followed by an alert text if you want a manual analysis trigger.
-- **Threaded Analysis**: The bot posts the analysis results in the same channel. For "Firing" alerts, it first sends an "Analyzing..." placeholder and then edits it with the final report.
+- **Automatic Analysis**: When added to a channel with `channels:history` permissions, the bot automatically intercepts messages matching Alertmanager patterns and begins its AI audit.
+- **Mentions**: You can force an analysis by tagging the bot (`@SREBot`) in an alert message.
+- **Firing Messages**: The bot posts an `🔍 Analyzing...` placeholder, then edits it to reveal the full RCA report.
+- **Resolved Messages**: The bot sends a `✅ Resolved: ...` update **only if it has already analyzed** that specific alert in its current session. If a resolved notification arrives without prior "firing" tracking, it is ignored silently.
+
+> [!NOTE]
+> For your security, the bot automatically redacts Bearer tokens, API keys, and passwords from diagnostic tool outputs before sending them to the LLM. Your sensitive credentials never enter the analysis history.

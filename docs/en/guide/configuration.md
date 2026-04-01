@@ -1,35 +1,55 @@
 # SREBot Configuration (Helm / Env)
 
-SREBot agent settings can be specified using **Environment Variables (Env Vars)** or via a **`config.yml`** configuration file (which the Helm chart inherently mounts inside the pod interface). This article describes all available parameters.
+The SREBot agent can be configured using **environment variables** or via a **`config.yml`** configuration file (which the Helm chart mounts inside the pod). This article describes all available parameters.
 
-## Core Connectivity Settings
-
-| Variable | Description | Default |
-|---|---|---|
-| `TELEGRAM_BOT_TOKEN` | Provided by @BotFather. | `""` |
-| `TELEGRAM_CHANNEL_ID` | Telegram Chat ID designating the incident channel. | `0` |
-| `SAAS_AGENT_TOKEN` | Secure token linking the agent to your SREBot Dashboard. | `""` |
-| `SAAS_WS_URL` | Polling WebSocket URL for the SREBot SaaS backend. | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
-| `REDIS_URL` | Redis standalone connection string to power deduplication. | `redis://srebot-redis:6379/0` |
-
-## AI Logic (LLM) & Deduplication Configuration
+## Core Connection Settings
 
 | Variable | Description | Default |
 |---|---|---|
-| `LLM_RESPONSE_LANGUAGE` | Final output RCA language mapping. e.g., `Russian`, `English`. | `English` |
-| `LLM_MAX_ITERATIONS` | System limit restricting infinite tool-call loops by the AI. | `10` |
-| `ALERT_FINGERPRINT_TTL` | Lifecycle TTL (in seconds). Firing alerts mapping identical fingerprint strings natively condense into single parent trees prior to expiration. | `86400` (24h) |
-| `BOT_CONTAINER_NAME` | SREBot pod internal container label (forces isolation against reading its own logs inside Elasticsearch). | `ai-observability-bot` |
-| `IMAGE_REPOSITORY` | Container image registry path. | `ghcr.io/shadrus/srebot` |
+| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather. | `""` |
+| `TELEGRAM_CHANNEL_ID` | Telegram target chat/channel ID. | `0` |
+| `SLACK_BOT_TOKEN` | Slack App Bot User OAuth Token (`xoxb-...`). | `""` |
+| `SLACK_APP_TOKEN` | Slack App Token for Socket Mode (`xapp-...`). | `""` |
+| `SLACK_CHANNEL_ID` | Specific Slack channel ID to monitor. | `""` |
+| `SAAS_AGENT_TOKEN` | Secret token for SREBot Dashboard communication. | `""` |
+| `SAAS_WS_URL` | WebSocket URL for the platform backend. | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
+| `REDIS_URL` | Redis connection URL for alert deduplication. | `redis://localhost:6379/0` |
 
-## Advanced YAML Bindings (`config.yml` / Helm `values.yaml`)
+## AI (LLM) and Parser Behavior
 
-Beyond environment variables, SREBot supports elaborate multi-level object overrides dedicated towards complex integrations.
+| Variable | Description | Default |
+|---|---|---|
+| `LLM_RESPONSE_LANGUAGE` | Language of the RCA report. Example: `Russian`, `English`. | `English` |
+| `LLM_MAX_ITERATIONS` | Maximum steps (tool usages) per alert analysis. | `10` |
+| `ALERT_FINGERPRINT_TTL` | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated. | `86400` (24h) |
+| `BOT_CONTAINER_NAME` | Name of the bot's own container (prevents it from reading and analyzing its own logs). | `ai-observability-bot` |
 
-### 1. Integrating MCP Servers (Model Context Protocol)
+## System Flags
 
-Specify backend tools globally directly parsing JSON RPC logic into your AI using the `mcp_servers` node.
+- `LOG_LEVEL`: Logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Defaults to `INFO`.
+- `DRY_RUN`: If `True`, the bot performs the analysis and logs it but **does not send any messages** to the chat. Useful for local debugging.
 
+---
+
+## Extended Configuration (`config.yml` / Helm `values.yaml`)
+
+In addition to environment variables, the bot supports a structured YAML format for advanced filters and integrations:
+
+### 1. Model Context Protocol (MCP) Integration
+
+The `mcp_servers` section allows you to connect external tools (Prometheus, Elasticsearch, Kubernetes, internal APIs) directly to the AI agent's logic.
+
+Each server supports the following fields:
+
+| Field | Description |
+|---|---|
+| `command` | Command to execute the MCP server. |
+| `args` | Command-line arguments. |
+| `env` | Environment variables passed to the server process. |
+| `read_only` | If `true`, the bot hides all mutation tools (`create_`, `delete_`, `update_`, `bulk`, etc.) from the LLM. Recommended for Elasticsearch/Databases to prevent accidental data modification. |
+| `condition` | Label filter. If specified, the server is only used for alerts matching the condition. Ideal for multi-cluster environments (see example below). |
+
+**Basic Example:**
 ```yaml
 mcp_servers:
   prometheus:
@@ -43,23 +63,92 @@ mcp_servers:
     read_only: true
 ```
 
-### 2. Alert Ignore Rules
+**Multi-Cluster Example (using condition):**
 
-Defines hardcoded exclusions directly dropping targeted alerts to optimize token allocation without blocking Alertmanager routines.
+If your infrastructure has multiple Kubernetes clusters with separate Prometheus instances, you can bind each MCP server to its specific cluster. The AI agent will automatically receive only the tools relevant to the cluster specified in the incoming alert labels.
+
+```yaml
+mcp_servers:
+  prod-prometheus:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://prod-prom:9090"]
+    condition:
+      labels:
+        cluster: "prod-cluster"
+  staging-prometheus:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://staging-prom:9090"]
+    condition:
+      labels:
+        cluster: "staging-cluster"
+```
+
+---
+
+### 2. Alert Filtering (Ignore Rules)
+
+Define conditions under which the bot should completely ignore an alert to save tokens and reduce noise.
+
+#### Simple Label Matching
+
+Labels must match simultaneously (**AND** logic):
 
 ```yaml
 ignore_rules:
-  - name: "Drop diagnostic spam"
+  - name: "Ignore test Watchdog alerts"
     condition:
       labels:
         severity: "info"
         alertname: "Watchdog"
-  - name: "Ignore low-priority dev nodes"
+  - name: "Skip dev cluster"
     condition:
       labels:
         cluster: "dev-cluster"
 ```
 
-## System Flags
-- `LOG_LEVEL`: Adjust the internal verbosity standard (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Base default is `INFO`.
-- `DRY_RUN`: Assuming `True`, SREBot will execute thorough system diagnostics dumping output strictly into K8s Pod logs instead of broadcasting directly to your active Telegram channels. Suitable for pre-flight testing.
+#### Negative Matching (not_labels)
+
+Ignore the alert if a label matches a specific value. For example, ignore anything that is **not** `critical`:
+
+```yaml
+ignore_rules:
+  - name: "Analyze only critical"
+    condition:
+      not_labels:
+        severity: "warning"
+```
+
+#### OR Logic (any)
+
+Ignore if **at least one** condition is met:
+
+```yaml
+ignore_rules:
+  - name: "Skip non-prod environments"
+    condition:
+      any:
+        - labels:
+            cluster: "dev-cluster"
+        - labels:
+            cluster: "staging-cluster"
+        - labels:
+            severity: "info"
+```
+
+#### AND Logic (all)
+
+Ignore only if **all** conditions are met simultaneously (for granular control):
+
+```yaml
+ignore_rules:
+  - name: "Skip only warnings in staging"
+    condition:
+      all:
+        - labels:
+            cluster: "staging-cluster"
+        - labels:
+            severity: "warning"
+```
+
+> [!TIP]
+> You can combine `labels`, `not_labels`, `any`, and `all` within a single rule to create complex filtering logic.

@@ -35,7 +35,14 @@ Insufficient CPU limit allocations restricted the `payment-service` pod causing 
 ---
 *(Sample SREBot Telegram Reply)*
 
-## Limits and Constraints
+## Limits and Balance
 
-Please be aware:
-If a matched alert notification triggers inside the channel, but your underlying organizational account remains at zero (`< 0.0`), SREBot forcibly bypasses workflow processing. The bot simply returns a generic fallback note advising personnel about the exhausted balance cap. Review further over at [Web Dashboard & Billing](/en/guide/dashboard).
+Please note:
+If your platform balance is zero (or below) at the time an alert triggers, the bot **will not** initiate analysis. You will receive a notification about insufficient balance, and the incident investigation will be cancelled. For more information on plans, see the [Dashboard and Billing](/en/guide/dashboard) section.
+
+## Resolved Behavior
+
+When Alertmanager sends a recovery message (`✅ Resolved`), the bot only responds if it has **already analyzed** that specific alert in the current session. In this case, the bot will post a `✅ Resolved: <alertname>` reply to the original message. If a resolved notification arrives without a prior firing state, it will be ignored quietly.
+
+> [!NOTE]
+> For security purposes, the bot automatically masks Bearer tokens, API keys, and passwords within diagnostic tool outputs before they reach the LLM. Your private credentials are never stored in the analysis history.
