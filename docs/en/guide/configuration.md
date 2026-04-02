@@ -39,29 +39,79 @@ In addition to environment variables, the bot supports a structured YAML format 
 
 The `mcp_servers` section allows you to connect external tools (Prometheus, Elasticsearch, Kubernetes, internal APIs) directly to the AI agent's logic.
 
+Starting from version 0.1.0, SREBot uses network-based connections to MCP servers (sidecars or standalone containers) instead of spawning local child processes.
+
 Each server supports the following fields:
 
-| Field | Description |
-|---|---|
-| `command` | Command to execute the MCP server. |
-| `args` | Command-line arguments. |
-| `env` | Environment variables passed to the server process. |
-| `read_only` | If `true`, the bot hides all mutation tools (`create_`, `delete_`, `update_`, `bulk`, etc.) from the LLM. Recommended for Elasticsearch/Databases to prevent accidental data modification. |
-| `condition` | Label filter. If specified, the server is only used for alerts matching the condition. Ideal for multi-cluster environments (see example below). |
+| Field | Description | Default |
+|---|---|---|
+| `url` | The SSE or HTTP endpoint of the MCP server. | `""` |
+| `transport` | Communication protocol: `sse` (legacy SSE) or `http` (modern Streamable HTTP). | `sse` |
+| `read_only` | If `true`, the bot hides all mutation tools from the LLM. Recommended for Elasticsearch. | `false` |
+| `condition` | Label filter. If specified, the server is only used for alerts matching the condition. | `null` |
 
-**Basic Example:**
+**Example (SSE):**
 ```yaml
 mcp_servers:
   prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://prom:9090"]
+    url: "http://prometheus-mcp:8080/sse"
+    transport: "sse"
+```
+
+**Example (Streamable HTTP):**
+```yaml
+mcp_servers:
   elasticsearch:
-    command: "python"
-    args: ["-m", "mcp_es_server"]
-    env:
-      ES_URL: "http://es:9200"
+    url: "http://elasticsearch-mcp:18001/mcp"
+    transport: "http"
     read_only: true
 ```
+
+#### Deploying as Sidecars (Helm)
+
+When running in Kubernetes, the most reliable way to deploy MCP servers is as **sidecar containers** within the same Pod as SREBot. This ensures low latency and high security (communication stays within the Pod).
+
+1. **Update `values.yaml`**: Add your MCP servers to the `sidecars` section.
+
+```yaml
+sidecars:
+  prometheus-mcp:
+    image: ghcr.io/pab1it0/prometheus-mcp-server:latest
+    env:
+      - name: PROMETHEUS_URL
+        value: "http://prometheus-operated.monitoring.svc:9090"
+      - name: PROMETHEUS_MCP_SERVER_TRANSPORT
+        value: "sse"
+    ports:
+      - containerPort: 8080
+
+  elasticsearch-mcp:
+    image: docker.elastic.co/mcp/elasticsearch:latest
+    command: ["http", "--address", "0.0.0.0:8081"]
+    env:
+      - name: ES_URL
+        value: "http://elasticsearch-master:9200"
+    ports:
+      - containerPort: 8081
+```
+
+2. **Update `config` in `values.yaml`**: Point SREBot to `localhost`, as all containers in a Pod share the same network namespace.
+
+```yaml
+config:
+  mcp_servers:
+    prometheus:
+      url: "http://localhost:8080/sse"
+    elasticsearch:
+      url: "http://localhost:8081/mcp"
+      transport: "http"
+```
+
+> [!TIP]
+> **Docker Networking (Linux):**
+> If your MCP servers are running as sidecars or containers on the same host as the bot, use `http://host.docker.internal:PORT` for connectivity. 
+> 
+> On Linux, ensure you have `extra_hosts: ["host.docker.internal:host-gateway"]` in your `docker-compose.yml`. Alternatively, run your MCP containers with `network_mode: host` to access host services directly via `localhost`.
 
 **Multi-Cluster Example (using condition):**
 
@@ -70,14 +120,12 @@ If your infrastructure has multiple Kubernetes clusters with separate Prometheus
 ```yaml
 mcp_servers:
   prod-prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://prod-prom:9090"]
+    url: "http://prod-prom-mcp:8080/sse"
     condition:
       labels:
         cluster: "prod-cluster"
   staging-prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://staging-prom:9090"]
+    url: "http://staging-prom-mcp:8181/sse"
     condition:
       labels:
         cluster: "staging-cluster"

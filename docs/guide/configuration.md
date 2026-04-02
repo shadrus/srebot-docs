@@ -38,29 +38,83 @@
 
 Через секцию `mcp_servers` вы можете подключать внешние инструменты (Prometheus, Elasticsearch, Kubernetes, внутренние API) прямо в логику AI-агента.
 
+Начиная с версии 0.1.0, SREBot использует сетевое подключение к MCP-серверам (sidecars или отдельные контейнеры) вместо запуска локальных дочерних процессов. Это повышает безопасность и упрощает развертывание в Kubernetes.
+
 Каждый сервер поддерживает следующие поля:
 
-| Поле | Описание |
-|---|---|
-| `command` | Команда для запуска MCP-сервера. |
-| `args` | Аргументы командной строки. |
-| `env` | Переменные окружения, передаваемые процессу сервера. |
-| `read_only` | Если `true`, бот скрывает от LLM все инструменты с мутирующими операциями: `create_`, `delete_`, `update_`, `bulk`, `reindex` и т.д. Используйте для Elasticsearch/БД, чтобы AI-агент не мог случайно изменить данные. |
-| `condition` | Фильтр по labels алерта. Если задан, сервер будет использоваться только для алертов, соответствующих условию. Удобно для мульти-кластерных сред (см. пример ниже). |
+| Поле | Описание | По умолчанию |
+|---|---|---|
+| `url` | SSE или HTTP эндпоинт MCP-сервера. | `""` |
+| `transport` | Протокол связи: `sse` (legacy SSE) или `http` (modern Streamable HTTP). | `sse` |
+| `read_only` | Если `true`, бот скрывает от LLM все инструменты с мутирующими операциями (`create_`, `delete_` и т.д.). Рекомендуется для баз данных. | `false` |
+| `condition` | Фильтр по labels. Если задан, сервер используется только для подходящих алертов. | `null` |
 
-**Базовый пример:**
+**Пример (SSE):**
+Серверы Prometheus часто используют классический SSE транспорт.
+
 ```yaml
 mcp_servers:
   prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://prom:9090"]
+    url: "http://prometheus-mcp:8080/sse"
+    transport: "sse"
+```
+
+**Пример (Streamable HTTP):**
+Официальный MCP-сервер Elasticsearch использует современный протокол Streamable HTTP.
+
+```yaml
+mcp_servers:
   elasticsearch:
-    command: "python"
-    args: ["-m", "mcp_es_server"]
-    env:
-      ES_URL: "http://es:9200"
+    url: "http://elasticsearch-mcp:18001/mcp"
+    transport: "http"
     read_only: true
 ```
+
+#### Развертывание через Sidecar (Helm)
+
+В Kubernetes самый надежный способ запуска MCP-серверов — это **sidecar-контейнеры** внутри того же Pod'а, где запущен SREBot. Это гарантирует минимальную задержку и максимальную безопасность (трафик не покидает пределы Pod'а).
+
+1. **Настройте `values.yaml`**: Добавьте сервера в секцию `sidecars`.
+
+```yaml
+sidecars:
+  prometheus-mcp:
+    image: ghcr.io/pab1it0/prometheus-mcp-server:latest
+    env:
+      - name: PROMETHEUS_URL
+        value: "http://prometheus-operated.monitoring.svc:9090"
+      - name: PROMETHEUS_MCP_SERVER_TRANSPORT
+        value: "sse"
+    ports:
+      - containerPort: 8080
+
+  elasticsearch-mcp:
+    image: docker.elastic.co/mcp/elasticsearch:latest
+    command: ["http", "--address", "0.0.0.0:8081"]
+    env:
+      - name: ES_URL
+        value: "http://elasticsearch-master:9200"
+    ports:
+      - containerPort: 8081
+```
+
+2. **Настройте `config` в `values.yaml`**: Укажите `localhost` в качестве адреса, так как все контейнеры в одном Под'е делят общую сеть.
+
+```yaml
+config:
+  mcp_servers:
+    prometheus:
+      url: "http://localhost:8080/sse"
+    elasticsearch:
+      url: "http://localhost:8081/mcp"
+      transport: "http"
+```
+
+> [!TIP]
+> **Сетевое взаимодействие в Docker (Linux):**
+> Если ваши MCP-серверы запущены как Sidecar или отдельные контейнеры на той же машине, что и бот — используйте `http://host.docker.internal:PORT` для подключения.
+> 
+> Для Linux не забудьте добавить `extra_hosts: ["host.docker.internal:host-gateway"]` в ваш `docker-compose.yml`. Кроме того, вы можете запустить MCP-контейнеры с `network_mode: host`, чтобы обращаться к сервисам хоста напрямую через `localhost`.
 
 **Пример с несколькими кластерами (condition):**
 
@@ -69,18 +123,15 @@ mcp_servers:
 ```yaml
 mcp_servers:
   prod-prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://prod-prom:9090"]
+    url: "http://prod-prom-mcp:8080/sse"
     condition:
       labels:
         cluster: "prod-cluster"
   staging-prometheus:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-prometheus", "--url", "http://staging-prom:9090"]
+    url: "http://staging-prom-mcp:8181/sse"
     condition:
       labels:
         cluster: "staging-cluster"
-```
 
 ---
 
