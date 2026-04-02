@@ -6,7 +6,7 @@
 
 | Переменная | Описание | По умолчанию |
 |---|---|---|
-| `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather. | `""` |
+| `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather. **Примечание:** Допустим только один активный инстанс бота на один токен. | `""` |
 | `TELEGRAM_CHANNEL_ID` | Идентификатор целевого Telegram-чата/канала. | `0` |
 | `SLACK_BOT_TOKEN` | Bot User OAuth Token Slack-приложения (`xoxb-...`). | `""` |
 | `SLACK_APP_TOKEN` | App-Level Token для Socket Mode (`xapp-...`). | `""` |

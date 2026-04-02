@@ -4,17 +4,12 @@ Integrating SREBot with Telegram allows the bot to read messages in your group c
 
 ---
 
-## 1. Create a Bot via BotFather
-
-1. Open Telegram and find the [@BotFather](https://t.me/botfather) bot.
-2. Send the `/newbot` command.
-3. Enter a **Display Name** for your bot (e.g., `My SREBot`).
-4. Enter a **Username** for your bot — it must end in `bot` (e.g., `my_srebot_bot`).
-5. BotFather will provide an **HTTP API Token** formatted like this:
-   ```
-   123456789:AAFhd-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   ```
    Save this token securely; you will need it during configuration.
+
+> [!IMPORTANT]
+> **Single Instance per Token:** Telegram only allows **one** active connection (polling) per bot token. 
+> - If you run two identical bots with the same token, they will "fight" for messages, causing intermittent failures.
+> - If you need to monitor different clusters/environments separately, **create a unique Telegram bot for each instance** and invite them all to your incident chat.
 
 > [!TIP]
 > The bot's username will be visible to all chat participants. We recommend using something recognizable to your team, like `acme_sre_bot`.

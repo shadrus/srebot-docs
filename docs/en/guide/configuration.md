@@ -6,7 +6,7 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 
 | Variable | Description | Default |
 |---|---|---|
-| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather. | `""` |
+| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather. **Note:** Only one active bot instance per token is allowed. | `""` |
 | `TELEGRAM_CHANNEL_ID` | Telegram target chat/channel ID. | `0` |
 | `SLACK_BOT_TOKEN` | Slack App Bot User OAuth Token (`xoxb-...`). | `""` |
 | `SLACK_APP_TOKEN` | Slack App Token for Socket Mode (`xapp-...`). | `""` |
