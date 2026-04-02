@@ -7,6 +7,10 @@ export default withMermaid(
     title: "SREBot",
     description: "Официальная документация платформы SREBot",
     cleanUrls: true,
+    lastUpdated: true,
+    sitemap: {
+      hostname: 'https://srebot.site360.tech'
+    },
     themeConfig: {
       logo: '/logo.svg',
       search: {
