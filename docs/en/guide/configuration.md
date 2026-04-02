@@ -71,9 +71,18 @@ mcp_servers:
 
 When running in Kubernetes, the most reliable way to deploy MCP servers is as **sidecar containers** within the same Pod as SREBot. This ensures low latency and high security (communication stays within the Pod).
 
+> [!WARNING]
+> **Top-level Key:** The `sidecars` section must be a **root** key in your `values.yaml`. Do **NOT** nest it inside the `config` section.
+> **Syntax:** Kubernetes uses a **list** for environment variables (`- name: ... / value: ...`), while Docker Compose uses a dictionary.
+
 1. **Update `values.yaml`**: Add your MCP servers to the `sidecars` section.
 
 ```yaml
+# Correct values.yaml structure
+config:
+  agentToken: "..." 
+
+# sidecars is at the same level as config, not inside it!
 sidecars:
   prometheus-mcp:
     image: ghcr.io/pab1it0/prometheus-mcp-server:latest
@@ -87,13 +96,17 @@ sidecars:
 
   elasticsearch-mcp:
     image: docker.elastic.co/mcp/elasticsearch:latest
-    command: ["http", "--address", "0.0.0.0:8081"]
+    # In Kubernetes, use 'args' to append to the image's ENTRYPOINT
+    args: ["http", "--address", "0.0.0.0:18001"]
     env:
       - name: ES_URL
         value: "http://elasticsearch-master:9200"
     ports:
       - containerPort: 8081
 ```
+
+> [!CAUTION]
+> **Command vs Args:** Unlike Docker Compose where `command` appends to `ENTRYPOINT`, in Kubernetes `command` overrides it entirely. Use `args` for the official Elasticsearch image.
 
 2. **Update `config` in `values.yaml`**: Point SREBot to `localhost`, as all containers in a Pod share the same network namespace.
 

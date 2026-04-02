@@ -74,9 +74,18 @@ mcp_servers:
 
 В Kubernetes самый надежный способ запуска MCP-серверов — это **sidecar-контейнеры** внутри того же Pod'а, где запущен SREBot. Это гарантирует минимальную задержку и максимальную безопасность (трафик не покидает пределы Pod'а).
 
+> [!WARNING]
+> **Ключ верхнего уровня:** Секция `sidecars` должна быть корнем в вашем `values.yaml`. **НЕ** вкладывайте её внутрь секции `config`.
+> **Синтаксис:** Kubernetes использует **список** для переменных окружения (`- name: ... / value: ...`), в то время как Docker Compose использует словарь.
+
 1. **Настройте `values.yaml`**: Добавьте сервера в секцию `sidecars`.
 
 ```yaml
+# Правильная структура values.yaml
+config:
+  agentToken: "..." 
+
+# sidecars находится на том же уровне, что и config, а не внутри!
 sidecars:
   prometheus-mcp:
     image: ghcr.io/pab1it0/prometheus-mcp-server:latest
@@ -90,13 +99,17 @@ sidecars:
 
   elasticsearch-mcp:
     image: docker.elastic.co/mcp/elasticsearch:latest
-    command: ["http", "--address", "0.0.0.0:8081"]
+    # В Kubernetes используем args, чтобы дополнить ENTRYPOINT образа
+    args: ["http", "--address", "0.0.0.0:18001"]
     env:
       - name: ES_URL
         value: "http://elasticsearch-master:9200"
     ports:
-      - containerPort: 8081
+      - containerPort: 18001
 ```
+
+> [!CAUTION]
+> **Command vs Args:** В отличие от Docker Compose, где `command` дополняет `ENTRYPOINT`, в Kubernetes `command` заменяет его полностью. Для официального образа Elasticsearch используйте `args`.
 
 2. **Настройте `config` в `values.yaml`**: Укажите `localhost` в качестве адреса, так как все контейнеры в одном Под'е делят общую сеть.
 
