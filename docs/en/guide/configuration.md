@@ -4,25 +4,24 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 
 ## Core Connection Settings
 
-| Variable | Description | Default |
-|---|---|---|
-| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather. **Note:** Only one active bot instance per token is allowed. | `""` |
-| `TELEGRAM_CHANNEL_ID` | Telegram target chat/channel ID. | `0` |
-| `SLACK_BOT_TOKEN` | Slack App Bot User OAuth Token (`xoxb-...`). | `""` |
-| `SLACK_APP_TOKEN` | Slack App Token for Socket Mode (`xapp-...`). | `""` |
-| `SLACK_CHANNEL_ID` | Specific Slack channel ID to monitor. | `""` |
-| `SAAS_AGENT_TOKEN` | Secret token for SREBot Dashboard communication. | `""` |
-| `SAAS_WS_URL` | WebSocket URL for the platform backend. | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
-| `REDIS_URL` | Redis connection URL for alert deduplication. | `redis://localhost:6379/0` |
+| Variable              | Description                                                                             | Default                                              |
+| --------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `TELEGRAM_BOT_TOKEN`  | Bot token from @BotFather. **Note:** Only one active bot instance per token is allowed. | `""`                                                 |
+| `TELEGRAM_CHANNEL_ID` | Telegram target chat/channel ID.                                                        | `0`                                                  |
+| `SLACK_BOT_TOKEN`     | Slack App Bot User OAuth Token (`xoxb-...`).                                            | `""`                                                 |
+| `SLACK_APP_TOKEN`     | Slack App Token for Socket Mode (`xapp-...`).                                           | `""`                                                 |
+| `SLACK_CHANNEL_ID`    | Specific Slack channel ID to monitor.                                                   | `""`                                                 |
+| `SAAS_AGENT_TOKEN`    | Secret token for SREBot Dashboard communication.                                        | `""`                                                 |
+| `SAAS_WS_URL`         | WebSocket URL for the platform backend.                                                 | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
+| `REDIS_URL`           | Redis connection URL for alert deduplication.                                           | `redis://localhost:6379/0`                           |
 
 ## AI (LLM) and Parser Behavior
 
-| Variable | Description | Default |
-|---|---|---|
-| `LLM_RESPONSE_LANGUAGE` | Language of the RCA report. Example: `Russian`, `English`. | `English` |
-| `LLM_MAX_ITERATIONS` | Maximum steps (tool usages) per alert analysis. | `10` |
+| Variable                | Description                                                                                    | Default       |
+| ----------------------- | ---------------------------------------------------------------------------------------------- | ------------- |
+| `LLM_RESPONSE_LANGUAGE` | Language of the RCA report. Example: `Russian`, `English`.                                     | `English`     |
 | `ALERT_FINGERPRINT_TTL` | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated. | `86400` (24h) |
-| `BOT_CONTAINER_NAME` | Name of the bot's own container (prevents it from reading and analyzing its own logs). | `ai-observability-bot` |
+| `BOT_CONTAINER_NAME`    | Name of the bot's own container (prevents it from reading and analyzing its own logs).         | `srebot`      |
 
 ## System Flags
 
@@ -43,14 +42,15 @@ Starting from version 0.1.0, SREBot uses network-based connections to MCP server
 
 Each server supports the following fields:
 
-| Field | Description | Default |
-|---|---|---|
-| `url` | The SSE or HTTP endpoint of the MCP server. | `""` |
-| `transport` | Communication protocol: `sse` (legacy SSE) or `http` (modern Streamable HTTP). | `sse` |
+| Field       | Description                                                                              | Default |
+| ----------- | ---------------------------------------------------------------------------------------- | ------- |
+| `url`       | The SSE or HTTP endpoint of the MCP server.                                              | `""`    |
+| `transport` | Communication protocol: `sse` (legacy SSE) or `http` (modern Streamable HTTP).           | `sse`   |
 | `read_only` | If `true`, the bot hides all mutation tools from the LLM. Recommended for Elasticsearch. | `false` |
-| `condition` | Label filter. If specified, the server is only used for alerts matching the condition. | `null` |
+| `condition` | Label filter. If specified, the server is only used for alerts matching the condition.   | `null`  |
 
 **Example (SSE):**
+
 ```yaml
 mcp_servers:
   prometheus:
@@ -59,6 +59,7 @@ mcp_servers:
 ```
 
 **Example (Streamable HTTP):**
+
 ```yaml
 mcp_servers:
   elasticsearch:
@@ -80,7 +81,7 @@ When running in Kubernetes, the most reliable way to deploy MCP servers is as **
 ```yaml
 # Correct values.yaml structure
 config:
-  agentToken: "..." 
+  agentToken: "..."
 
 # sidecars is at the same level as config, not inside it!
 sidecars:
@@ -122,8 +123,8 @@ config:
 
 > [!TIP]
 > **Docker Networking (Linux):**
-> If your MCP servers are running as sidecars or containers on the same host as the bot, use `http://host.docker.internal:PORT` for connectivity. 
-> 
+> If your MCP servers are running as sidecars or containers on the same host as the bot, use `http://host.docker.internal:PORT` for connectivity.
+>
 > On Linux, ensure you have `extra_hosts: ["host.docker.internal:host-gateway"]` in your `docker-compose.yml`. Alternatively, run your MCP containers with `network_mode: host` to access host services directly via `localhost`.
 
 **Multi-Cluster Example (using condition):**
