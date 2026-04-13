@@ -40,6 +40,7 @@ export default withMermaid(
               { text: 'Веб-дашборд', link: '/guide/dashboard' },
               { text: 'Настройка Telegram', link: '/guide/telegram-setup' },
               { text: 'Настройка Slack', link: '/guide/slack-setup' },
+              { text: 'Настройка Discord', link: '/guide/discord-setup' },
               { text: 'Форматирование алертов', link: '/guide/alert-formatting' },
               { text: 'Настройки бота (Env/YAML)', link: '/guide/configuration' }
             ]
@@ -75,6 +76,7 @@ export default withMermaid(
               { text: 'Web Dashboard', link: '/en/guide/dashboard' },
               { text: 'Telegram Setup', link: '/en/guide/telegram-setup' },
               { text: 'Slack Setup', link: '/en/guide/slack-setup' },
+              { text: 'Discord Setup', link: '/en/guide/discord-setup' },
               { text: 'Alert Formatting', link: '/en/guide/alert-formatting' },
               { text: 'Bot Configuration', link: '/en/guide/configuration' }
             ]

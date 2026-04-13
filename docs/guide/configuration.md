@@ -11,6 +11,8 @@
 | `SLACK_BOT_TOKEN`     | Bot User OAuth Token Slack-приложения (`xoxb-...`).                                                 | `""`                                                 |
 | `SLACK_APP_TOKEN`     | App-Level Token для Socket Mode (`xapp-...`).                                                       | `""`                                                 |
 | `SLACK_CHANNEL_ID`    | ID Slack-канала, который бот будет слушать.                                                         | `""`                                                 |
+| `DISCORD_BOT_TOKEN`   | Токен Discord-бота из Developer Portal.                                                             | `""`                                                 |
+| `DISCORD_CHANNEL_ID`  | ID Discord-канала (Snowflake), где бот будет слушать алерты.                                        | `0`                                                  |
 | `SAAS_AGENT_TOKEN`    | Секретный токен для связи с SREBot Дашбордом.                                                       | `""`                                                 |
 | `SAAS_WS_URL`         | WebSocket URL бэкенда платформы.                                                                    | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
 | `REDIS_URL`           | URL подключения к Redis для дедупликации алертов.                                                   | `redis://localhost:6379/0`                           |

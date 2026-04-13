@@ -11,6 +11,8 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 | `SLACK_BOT_TOKEN`     | Slack App Bot User OAuth Token (`xoxb-...`).                                            | `""`                                                 |
 | `SLACK_APP_TOKEN`     | Slack App Token for Socket Mode (`xapp-...`).                                           | `""`                                                 |
 | `SLACK_CHANNEL_ID`    | Specific Slack channel ID to monitor.                                                   | `""`                                                 |
+| `DISCORD_BOT_TOKEN`   | Discord Bot Token from Developer Portal.                                                | `""`                                                 |
+| `DISCORD_CHANNEL_ID`  | Discord Channel ID (Snowflake) where the bot listens for alerts.                        | `0`                                                  |
 | `SAAS_AGENT_TOKEN`    | Secret token for SREBot Dashboard communication.                                        | `""`                                                 |
 | `SAAS_WS_URL`         | WebSocket URL for the platform backend.                                                 | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
 | `REDIS_URL`           | Redis connection URL for alert deduplication.                                           | `redis://localhost:6379/0`                           |
