@@ -1,12 +1,13 @@
 # Interactive Web Dashboard
 
-[SREBot Web Dashboard](/#) acts as your platform's primary control center. Aside from administering security options and configuration, it enables rigorous tracing of SREBot's operational logic per incident.
+[SREBot Web Dashboard](https://srebot.site360.tech) acts as your platform's primary control center. Aside from administering security options and configuration, it enables rigorous tracing of SREBot's operational logic per incident.
 
 ## Incident Analysis Detail View
 
 SREBot excels by exposing complete transparency (its "thought process") into the LLM executions. Over on your summary view, colored severity indicators delineate priority issues.
 
 Clicking an incident drills down into the **Detailed RCA Record**, showcasing:
+
 - **Processing State:** Processing state (`analyzing`), finished state (`completed`), or errored (`failed`).
 - **Written RCA Output:** The finalized, comprehensive issue breakdown provided to Telegram.
 - **LLM Tool Executions (Logs):** You can transparently observe the step-by-step PromQL interactions or Elasticsearch DSL requests made by SREBot.
@@ -28,5 +29,5 @@ Should your organizational account drop below `0.0`, SREBot freezes analysis req
 
 ## Security & Organization Settings
 
-- **Identity Management:** Access encompasses secure JWT workflows, alongside email-driven token resets. 
+- **Identity Management:** Access encompasses secure JWT workflows, alongside email-driven token resets.
 - Role boundaries secure the organization against unexpected edits.
