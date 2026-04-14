@@ -52,6 +52,11 @@ export default withMermaid(
               ],
             },
           ],
+          editLink: {
+            pattern:
+              "https://github.com/shadrus/srebot-docs/edit/main/docs/:path",
+            text: "Редактировать эту страницу на GitHub",
+          },
           footer: {
             message: "Выпущено под лицензией MIT.",
             copyright: "Copyright © 2026 SREBot",
@@ -64,6 +69,11 @@ export default withMermaid(
         link: "/en/",
         description: "Official SREBot Platform Documentation",
         themeConfig: {
+          editLink: {
+            pattern:
+              "https://github.com/shadrus/srebot-docs/edit/main/docs/:path",
+            text: "Edit this page on GitHub",
+          },
           nav: [
             { text: "Guide", link: "/en/guide/introduction" },
             { text: "Back to Site", link: "https://srebot.site360.tech" },
