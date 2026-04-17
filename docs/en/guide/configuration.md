@@ -56,7 +56,7 @@ Each server supports the following fields:
 ```yaml
 mcp_servers:
   prometheus:
-    url: "http://prometheus-mcp:8080/sse"
+    url: "http://prometheus-mcp:18000/sse"
     transport: "sse"
 ```
 
@@ -91,11 +91,13 @@ sidecars:
     image: ghcr.io/pab1it0/prometheus-mcp-server:latest
     env:
       - name: PROMETHEUS_URL
-        value: "http://prometheus-operated.monitoring.svc:9090"
+        value: "http://kube-prometheus-stack-prometheus.prometheus-stack:9090"
+      - name: PROMETHEUS_MCP_BIND_PORT
+        value: "18000"
       - name: PROMETHEUS_MCP_SERVER_TRANSPORT
         value: "sse"
     ports:
-      - containerPort: 8080
+      - containerPort: 18000
 
   elasticsearch-mcp:
     image: docker.elastic.co/mcp/elasticsearch:latest
@@ -103,9 +105,9 @@ sidecars:
     args: ["http", "--address", "0.0.0.0:18001"]
     env:
       - name: ES_URL
-        value: "http://elasticsearch-master:9200"
+        value: "http://elasticsearch-master.elk:9200"
     ports:
-      - containerPort: 8081
+      - containerPort: 18001
 ```
 
 > [!CAUTION]
@@ -117,10 +119,14 @@ sidecars:
 config:
   mcp_servers:
     prometheus:
-      url: "http://localhost:8080/sse"
+      url: "http://localhost:18000/sse"
+      transport: "sse"
+      read_only: true
+
     elasticsearch:
-      url: "http://localhost:8081/mcp"
+      url: "http://localhost:18001/mcp"
       transport: "http"
+      read_only: true
 ```
 
 > [!TIP]
