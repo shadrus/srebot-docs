@@ -10,6 +10,15 @@ export default withMermaid(
     lastUpdated: true,
     sitemap: {
       hostname: "https://srebot.site360.tech",
+      transformItems: (items) =>
+        items.map((item) => ({
+          ...item,
+          url: item.url ? `docs/${item.url}` : "docs",
+          links: item.links?.map((link) => ({
+            ...link,
+            url: link.url ? `docs/${link.url}` : "docs",
+          })),
+        })),
     },
     themeConfig: {
       logo: "/logo.svg",
