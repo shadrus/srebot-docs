@@ -26,6 +26,12 @@ sequenceDiagram
 4. **Investigation:** Empowered with internal K8s cluster capabilities (unrestricted PromQL/ES queries), the bot initiates a secure LLM sweep.
 5. **Conclusion:** SREBot dispatches its final RCA report via a direct *reply* to the original Alertmanager message.
 
+## Key Features
+- **Automated RCA:** Instant incident analysis based on metrics and logs.
+- **Interactive Follow-ups:** Ability to ask the bot additional questions directly in chat (via Reply) to dive deeper into details.
+- **Secure Access:** The bot reads data only from your private network perimeter.
+- **Multi-language Support:** The bot can respond in Russian or English depending on settings.
+
 ## Key Benefits
 
 - **Infrastructure Security:** SREBot runs entirely within your perimeter, negating the requirement for exposing databases externally through risky Ingress pathways.
