@@ -33,3 +33,32 @@ To protect against infinite loops and spam, the following limits apply:
 - **Maximum turns**: a limited number of questions can be asked per incident (default is 5). If the limit is exceeded, the bot will notify you.
 
 These parameters are configured on the bot side (`FOLLOWUP_COOLDOWN`, `FOLLOWUP_MAX_TURNS`).
+
+## Management Commands (Mute / Unmute / Status)
+
+You can temporarily suspend alert analysis and notifications using management commands. Commands can be sent with or without a slash (`/`).
+
+### 1. Suspend Notifications (Mute)
+The command `mute [duration]` (or `/mute [duration]`) activates silence mode.
+* **Duration format**: supports seconds (`s`), minutes (`m`), hours (`h`), and days (`d`). For example: `30m`, `2h`, `1d`, `1h 30m`.
+* **Default duration**: if no duration is specified, silence mode is activated for **1 hour**.
+
+It can be applied in two scopes:
+* **Specific Alert Type (Mute Alert)**: Send the command `mute 2h` as a **reply** to the bot's analysis (RCA) message. The bot will silence only this specific alert type (e.g. `HighCpuUsage`) in the current chat.
+* **Global Silence (Mute Chat)**: Send the command `mute 2h` as a regular message in the chat. The bot will temporarily stop analyzing all incoming alerts for this chat.
+
+### 2. Resume Notifications (Unmute)
+The command `unmute` (or `/unmute`) deactivates silence mode.
+* **Resume Specific Alert Type**: Send `unmute` as a **reply** to the bot's analysis (RCA) message. The bot will resume analysis only for that specific alert type.
+* **Global Resume**: Send `unmute` as a regular message in the chat. This will clear all active silences (both global and alert-specific) for the chat.
+
+### 3. Check Silence Status (Status)
+The command `status` (or `/status`) lists all active silence rules in the current chat, showing the remaining duration for each.
+* If there are no active silences, the bot will respond confirming that it is running normally.
+
+### 4. Targeting Specific Bots (Multi-bot Chats)
+If you have multiple bots in the same group chat, you can target commands to a specific bot instance by appending its username suffix:
+* `/mute@SreBotA 30m` — silences only `@SreBotA`.
+* `/status@SreBotB` — queries status only from `@SreBotB`.
+
+If no username suffix is provided, the command will be processed by all bots that can read chat messages.
