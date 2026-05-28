@@ -4,10 +4,31 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 export default withMermaid(
   defineConfig({
     base: "/docs/",
-    title: "SREBot",
-    description: "Официальная документация платформы SREBot",
+    title: "SREBot Docs",
+    description:
+      "Документация SREBot: AI SRE-копилот для анализа инцидентов в Kubernetes",
     cleanUrls: true,
     lastUpdated: true,
+    head: [
+      // Open Graph
+      ["meta", { property: "og:type", content: "website" }],
+      ["meta", { property: "og:site_name", content: "SREBot Docs" }],
+      [
+        "meta",
+        {
+          property: "og:image",
+          content: "https://srebot.site360.tech/og-image.png",
+        },
+      ],
+      ["meta", { name: "twitter:card", content: "summary_large_image" }],
+      [
+        "meta",
+        {
+          name: "twitter:image",
+          content: "https://srebot.site360.tech/og-image.png",
+        },
+      ],
+    ],
     sitemap: {
       hostname: "https://srebot.site360.tech",
       transformItems: (items) =>
@@ -25,6 +46,45 @@ export default withMermaid(
       search: {
         provider: "local",
       },
+    },
+    transformPageData(pageData) {
+      const canonical = `https://srebot.site360.tech/docs/${pageData.relativePath}`;
+      const isEn = pageData.relativePath.startsWith("en/");
+      const ruPath = isEn
+        ? pageData.relativePath.replace(/^en\//, "")
+        : pageData.relativePath;
+      const enPath = isEn
+        ? pageData.relativePath
+        : `en/${pageData.relativePath}`;
+
+      pageData.frontmatter.head ??= [];
+      pageData.frontmatter.head.push(
+        ["link", { rel: "canonical", href: canonical }],
+        [
+          "link",
+          {
+            rel: "alternate",
+            hreflang: "ru",
+            href: `https://srebot.site360.tech/docs/${ruPath}`,
+          },
+        ],
+        [
+          "link",
+          {
+            rel: "alternate",
+            hreflang: "en",
+            href: `https://srebot.site360.tech/docs/${enPath}`,
+          },
+        ],
+        [
+          "link",
+          {
+            rel: "alternate",
+            hreflang: "x-default",
+            href: `https://srebot.site360.tech/docs/${ruPath}`,
+          },
+        ],
+      );
     },
     locales: {
       root: {
@@ -82,7 +142,8 @@ export default withMermaid(
         label: "English",
         lang: "en",
         link: "/en/",
-        description: "Official SREBot Platform Documentation",
+        description:
+          "SREBot Docs: AI SRE Copilot for Kubernetes Incident Analysis",
         themeConfig: {
           editLink: {
             pattern:

@@ -1,3 +1,8 @@
+---
+title: Introduction to SREBot — AI SRE Copilot for Kubernetes
+description: "SREBot documentation: AI bot for automated incident root cause analysis in Kubernetes. Integrates with Telegram, Slack, Discord, Prometheus, Elasticsearch."
+---
+
 # Introduction to SREBot
 
 **SREBot** is an intelligent observability and monitoring platform designed to rapidly uncover the root causes of incidents (Root Cause Analysis).
@@ -24,9 +29,10 @@ sequenceDiagram
 2. **Alert Reception:** Alertmanager posts its routine alert notification into the incident channel.
 3. **Deduplication:** The bot captures the chat payload natively. It validates the fingerprint and ignores identical follow-ups to dramatically cut noise.
 4. **Investigation:** Empowered with internal K8s cluster capabilities (unrestricted PromQL/ES queries), the bot initiates a secure LLM sweep.
-5. **Conclusion:** SREBot dispatches its final RCA report via a direct *reply* to the original Alertmanager message.
+5. **Conclusion:** SREBot dispatches its final RCA report via a direct _reply_ to the original Alertmanager message.
 
 ## Key Features
+
 - **Automated RCA:** Instant incident analysis based on metrics and logs.
 - **Interactive Follow-ups:** Ability to ask the bot additional questions directly in chat (via Reply) to dive deeper into details.
 - **Secure Access:** The bot reads data only from your private network perimeter.
@@ -38,8 +44,6 @@ sequenceDiagram
 - **Lower MTTD / MTTR:** The AI automates early-stage investigation routines natively.
 - **Intuitive Web Dashboard:** A robust UI provides transparent auditing covering SREBot's active inference pipelines.
 
-Check out the [Getting Started](/en/guide/setup) section to deploy the Helm charts.
-
 ## Open Source
 
 The SREBot agent (the component deployed in your infrastructure) is **fully open-source** and available on GitHub:
@@ -47,3 +51,20 @@ The SREBot agent (the component deployed in your infrastructure) is **fully open
 👉 [github.com/shadrus/srebot](https://github.com/shadrus/srebot)
 
 You can independently inspect the source code, verify that no unauthorized actions take place, and build your own Docker images from source if required.
+
+Check out the [Getting Started](/en/guide/setup) section to deploy the Helm charts.
+
+## Documentation Contents
+
+| Section                                            | Description                            |
+| -------------------------------------------------- | -------------------------------------- |
+| [Getting Started](/en/guide/setup)                 | Helm deployment in Kubernetes          |
+| [Web Dashboard](/en/guide/dashboard)               | Bot management, incidents, billing     |
+| [Organization Management](/en/guide/organizations) | Multi-org, creation and switching      |
+| [Team Management](/en/guide/team-management)       | Roles, invitations, ownership transfer |
+| [Communicating with Bot](/en/guide/interaction)    | Follow-up questions, mute/unmute       |
+| [Telegram Setup](/en/guide/telegram-setup)         | BotFather, Chat ID, groups             |
+| [Slack Setup](/en/guide/slack-setup)               | Socket Mode, tokens, channels          |
+| [Discord Setup](/en/guide/discord-setup)           | Bot Token, permissions, channels       |
+| [Alert Formatting](/en/guide/alert-formatting)     | Parsing, regex, smart parsing          |
+| [Configuration](/en/guide/configuration)           | Env vars, MCP servers, ignore rules    |
