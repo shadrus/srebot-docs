@@ -47,6 +47,7 @@ export default withMermaid(
               text: "Использование",
               items: [
                 { text: "Веб-дашборд", link: "/guide/dashboard" },
+                { text: "Управление командой", link: "/guide/team-management" },
                 { text: "Общение с ботом", link: "/guide/interaction" },
                 { text: "Настройка Telegram", link: "/guide/telegram-setup" },
                 { text: "Настройка Slack", link: "/guide/slack-setup" },
@@ -100,6 +101,7 @@ export default withMermaid(
               text: "Usage",
               items: [
                 { text: "Web Dashboard", link: "/en/guide/dashboard" },
+                { text: "Team Management", link: "/en/guide/team-management" },
                 { text: "Communicating with Bot", link: "/en/guide/interaction" },
                 { text: "Telegram Setup", link: "/en/guide/telegram-setup" },
                 { text: "Slack Setup", link: "/en/guide/slack-setup" },
