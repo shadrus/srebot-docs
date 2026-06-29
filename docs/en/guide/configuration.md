@@ -24,7 +24,7 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 | `LLM_RESPONSE_LANGUAGE`  | Language of the RCA report. Example: `Russian`, `English`.                                     | `English`     |
 | `ALERT_FINGERPRINT_TTL`  | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated. | `86400` (24h) |
 | `FOLLOWUP_MAX_TURNS`     | Max number of follow-up questions per incident.                                                | `5`           |
-| `FOLLOWUP_TTL`           | Follow-up context window TTL (seconds). After expiry, the bot cannot answer follow-ups.        | `3600` (1h)   |
+| `FOLLOWUP_TTL`           | Follow-up context window TTL (seconds). After expiry, the bot cannot answer follow-ups.        | `43200` (12h) |
 | `FOLLOWUP_USER_COOLDOWN` | Min seconds between follow-up questions from a single user.                                    | `10`          |
 | `BOT_CONTAINER_NAME`     | Name of the bot's own container (prevents it from reading and analyzing its own logs).         | `srebot`      |
 

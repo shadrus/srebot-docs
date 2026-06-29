@@ -10,6 +10,27 @@ To ask the bot a question about a specific incident:
 2. Reply to this message (**Reply**) with your question.
 3. The bot will see your reply, show an "Analyzing..." status, and send the clarified information.
 
+## Free Dialogue (Custom Queries)
+
+In addition to questions about specific alerts, you can ask the bot a custom diagnostic question at any time simply by addressing it.
+
+### How to Address the Bot
+
+Send a message in the chat, mentioning the bot:
+* By its username (e.g. `@stage_sre_bot`).
+* By its display name (e.g. `@stage-sre-bot` or just mentioning `stage-sre-bot` in the text).
+
+**Examples of free-form queries:**
+* _“@stage_sre_bot check logs of backend container for the last 2 hours”_
+* _“@stage_sre_bot collect error logs in production namespace”_
+* _“@stage_sre_bot what tools are available to you?”_
+
+Such a conversation will be saved in the control panel as a **User Query**, and you will be able to view the full history of questions and answers in the control panel (marked with a speech bubble icon 💬 in the list).
+
+### Context Window
+
+The bot preserves the context of your conversation. By default, the context TTL (the window during which you can continue the reply thread) is **12 hours** from the last message. This allows you to maintain an active dialogue throughout the working day without losing context.
+
 ## Rules for Interacting with the Bot
 
 To ensure the bot works efficiently and does not waste your tokens, please follow these rules:
