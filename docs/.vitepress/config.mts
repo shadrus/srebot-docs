@@ -107,6 +107,7 @@ export default withMermaid(
               text: "Использование",
               items: [
                 { text: "Веб-дашборд", link: "/guide/dashboard" },
+                { text: "Скилы бота (Bot Skills)", link: "/guide/skills" },
                 {
                   text: "Управление организациями",
                   link: "/guide/organizations",
@@ -166,6 +167,7 @@ export default withMermaid(
               text: "Usage",
               items: [
                 { text: "Web Dashboard", link: "/en/guide/dashboard" },
+                { text: "Bot Skills", link: "/en/guide/skills" },
                 {
                   text: "Organization Management",
                   link: "/en/guide/organizations",
