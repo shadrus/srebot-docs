@@ -10,6 +10,16 @@ To ask the bot a question about a specific incident:
 2. Reply to this message (**Reply**) with your question.
 3. The bot will see your reply, show an "Analyzing..." status, and send the clarified information.
 
+## On-Demand Analysis
+
+By default, the bot automatically analyzes every incoming alert. However, the administrator can disable automatic analysis (using the `AUTO_ANALYZE_ALERTS=false` variable). In this case, the bot will only send a short basic notification about the problem to save tokens.
+
+If you see such a notification and want the bot to run a full Root Cause Analysis (RCA):
+
+1. **Reply** to the short alert message.
+2. Write any text, for example: _"analyze this"_, _"what happened?"_ or simply ask a specific question about the alert.
+3. The bot will pick up the alert context, run the LLM analysis, and send you a detailed response, after which you can continue the dialogue as usual.
+
 ## Free Dialogue (Custom Queries)
 
 In addition to questions about specific alerts, you can ask the bot a custom diagnostic question at any time simply by addressing it.

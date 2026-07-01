@@ -22,6 +22,7 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 | Variable                 | Description                                                                                    | Default       |
 | ------------------------ | ---------------------------------------------------------------------------------------------- | ------------- |
 | `LLM_RESPONSE_LANGUAGE`  | Language of the RCA report. Example: `Russian`, `English`.                                     | `English`     |
+| `AUTO_ANALYZE_ALERTS`    | Whether to automatically trigger RCA for incoming alerts. If `false`, the bot will only send a short notification, and analysis will run only on explicit user request (via Reply). | `true`        |
 | `ALERT_FINGERPRINT_TTL`  | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated. | `86400` (24h) |
 | `FOLLOWUP_MAX_TURNS`     | Max number of follow-up questions per incident.                                                | `5`           |
 | `FOLLOWUP_TTL`           | Follow-up context window TTL (seconds). After expiry, the bot cannot answer follow-ups.        | `43200` (12h) |

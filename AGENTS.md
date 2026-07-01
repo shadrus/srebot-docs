@@ -83,23 +83,6 @@ docs/
 
 ---
 
-## Modern Type Hints (Python 3.13+)
-
-If any Python scripting or tooling is added to this project (e.g., build scripts, generators), it **must** follow modern Python type hint conventions:
-
-| Rule | Policy |
-|---|---|
-| `from __future__ import annotations` | **Do not use** — Python 3.13+ handles this natively |
-| Type unions | Use `X \| Y` (PEP 604), not `Optional[X]` or `Union[X, Y]` |
-| Generic aliases | Use `list[X]`, `dict[K, V]`, `tuple[X, ...]` — not `typing.List`, `typing.Dict` |
-| `TypedDict` | Use `class MyDict(TypedDict):` for structured dicts |
-| `@override` | Use `typing.override` (PEP 698) when overriding base class methods |
-| Type narrowing | Use `isinstance(x, int) \| is None` patterns; prefer `TypeGuard` / `TypeIs` (PEP 742) for custom guards |
-| `typing.override` decorator | Apply to all overridden methods for explicit signalling |
-| Runtime type checking | Prefer `isinstance` checks or `type(x) is Y` — avoid `typing.get_type_hints` at runtime unless necessary |
-
----
-
 ## Git Workflow
 
 - Commit messages: imperative mood, present tense (`Add deployment guide`, not `Added...`)
