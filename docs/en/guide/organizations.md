@@ -64,7 +64,7 @@ All data and actions in the dashboard are scoped to the **current organization**
 | **Incidents** | Incident list, analysis details, tool call history |
 | **Billing** | Balance, tariff, transaction history, payment methods |
 | **Team** | Members, roles, pending invitations |
-| **Bot tokens** | Agent tokens for Telegram, Slack, Discord integration |
+| **Bot tokens** | Agent tokens for Telegram, Slack, Discord, and Time integration |
 
 ### Roles and Permissions
 

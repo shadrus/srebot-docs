@@ -117,6 +117,7 @@ export default withMermaid(
                 { text: "Настройка Telegram", link: "/guide/telegram-setup" },
                 { text: "Настройка Slack", link: "/guide/slack-setup" },
                 { text: "Настройка Discord", link: "/guide/discord-setup" },
+                { text: "Настройка Time", link: "/guide/time-setup" },
                 {
                   text: "Форматирование алертов",
                   link: "/guide/alert-formatting",
@@ -180,6 +181,7 @@ export default withMermaid(
                 { text: "Telegram Setup", link: "/en/guide/telegram-setup" },
                 { text: "Slack Setup", link: "/en/guide/slack-setup" },
                 { text: "Discord Setup", link: "/en/guide/discord-setup" },
+                { text: "Time Setup", link: "/en/guide/time-setup" },
                 {
                   text: "Alert Formatting",
                   link: "/en/guide/alert-formatting",

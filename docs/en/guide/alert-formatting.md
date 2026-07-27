@@ -23,8 +23,8 @@ Annotations:
 Source: http://prometheus/graph
 ```
 
-### 2. Markdown/Bold (Slack/Telegram optimized)
-SREBot also supports common bold formatting styles from Slack or Telegram.
+### 2. Markdown/Bold (Telegram, Slack, Discord, and Time)
+SREBot also supports common bold formatting styles used by the supported chat platforms.
 
 **Example:**
 ```text

@@ -1,6 +1,8 @@
 # Getting Started (Helm Deployment)
 
-SREBot is engineered natively for Kubernetes environments. The entire platform, including the automated Telegram AI agent, deploys directly into your private cluster via **Helm**, guaranteeing your observability databases (Prometheus/Elasticsearch) remain internal and strictly secure.
+SREBot is designed for Kubernetes environments. A bot for Telegram, Slack, Discord, or Time is
+deployed into your private cluster with **Helm**, keeping your observability databases
+(Prometheus/Elasticsearch) internal.
 
 ## Step 1: Provisions and Tokens
 
@@ -10,10 +12,12 @@ Collect the following structural attributes before performing your deployment wo
    - Sign up at the secure [Web Dashboard](/#).
    - Route to **Settings** and generate a new `Agent Token`. Safely copy it.
    - Routinely verify your **Billing** status to ensure operations aren't halted by empty limits.
-2. **Telegram Bot Token:**
-   - Request a standard HTTP API token via Telegram's [@BotFather](https://t.me/botfather).
-3. **Target Chat ID:**
-   - Retrieve the specific numeric Chat ID representing your incident alert channel (e.g., `-100123456789`). This specifies where Alertmanager emits notifications.
+2. **Chat platform credentials:**
+   - Select one platform and prepare its tokens and channel ID.
+   - For Telegram, follow the [Telegram setup guide](/en/guide/telegram-setup).
+   - For Time, follow the [Time Messenger setup guide](/en/guide/time-setup).
+
+One SREBot process can connect to only one chat platform.
 
 ## Step 2: Deploying the Helm Chart
 
@@ -29,11 +33,12 @@ helm repo update
 2. Construct a personalized `values.yaml` mapping your specific target credentials and internal database paths.
 
 ```yaml
-config:
-  agentToken: "YOUR_DASHBOARD_AGENT_TOKEN"
-  telegramBotToken: "YOUR_BOTFATHER_TOKEN"
-  telegramChatId: "-100123456789"
+secrets:
+  telegram_bot_token: "YOUR_BOTFATHER_TOKEN"
+  telegram_channel_id: "-100123456789"
+  saas_agent_token: "YOUR_DASHBOARD_AGENT_TOKEN"
 
+config:
   mcp_servers:
     prometheus:
       url: "http://localhost:18000/sse"
@@ -68,6 +73,16 @@ sidecars:
       - containerPort: 18001
 ```
 
+For Time, replace the `secrets` section:
+
+```yaml
+secrets:
+  time_base_url: "https://time.example.com"
+  time_token: "YOUR_TIME_BOT_TOKEN"
+  time_channel_id: "YOUR_TIME_CHANNEL_ID"
+  saas_agent_token: "YOUR_DASHBOARD_AGENT_TOKEN"
+```
+
 3. Execute the target chart deployment:
 
 ```bash
@@ -78,10 +93,11 @@ helm install my-srebot srebot/srebot --namespace monitoring --create-namespace
 
 As soon as the pods are running, SREBot initializes automatically. **The bot handles registration on its own:**
 
-1. It authenticates and binds to the specified `telegramChatId` via the Telegram API.
+1. It authenticates with the selected messenger and connects to the configured channel.
 2. It begins listening for Alertmanager notifications in the chat.
 3. It queries data through MCP servers (Prometheus, Elasticsearch) inside your cluster and sends investigation results directly to the chat — no external access (Ingress) required.
 
 ::: tip Fully Operational
-Simply add your new Telegram bot directly into your indicated incident group chat. The bot will automatically assume responsibility whenever Alertmanager emits its subsequent alerts.
+Add the bot account to the target incident chat. The bot starts working when the first incident
+notification arrives.
 :::

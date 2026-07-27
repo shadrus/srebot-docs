@@ -13,9 +13,16 @@ The SREBot agent can be configured using **environment variables** or via a **`c
 | `SLACK_CHANNEL_ID`    | Specific Slack channel ID to monitor.                                                   | `""`                                                 |
 | `DISCORD_BOT_TOKEN`   | Discord Bot Token from Developer Portal.                                                | `""`                                                 |
 | `DISCORD_CHANNEL_ID`  | Discord Channel ID (Snowflake) where the bot listens for alerts.                        | `0`                                                  |
+| `TIME_BASE_URL`       | Time server base URL without `/api/v4`, for example `https://time.example.com`.         | `""`                                                 |
+| `TIME_TOKEN`          | Bearer token for the Time bot account.                                                  | `""`                                                 |
+| `TIME_CHANNEL_ID`     | String ID of the Time channel to monitor.                                               | `""`                                                 |
 | `SAAS_AGENT_TOKEN`    | Secret token for SREBot Dashboard communication.                                        | `""`                                                 |
 | `SAAS_WS_URL`         | WebSocket URL for the platform backend.                                                 | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
 | `REDIS_URL`           | Redis connection URL for alert deduplication.                                           | `redis://localhost:6379/0`                           |
+
+Configure credentials for exactly one chat platform. If more than one integration is configured,
+SREBot stops during startup with a configuration error. See
+[Time Messenger Integration Setup](/en/guide/time-setup) for Time-specific instructions.
 
 ## AI (LLM) and Parser Behavior
 

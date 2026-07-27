@@ -252,7 +252,9 @@ At the bottom of the page is a table of all balance operations with filtering su
 ### Negative Balance Protection
 
 ::: danger Analysis blocked
-If your balance drops **below zero**, SREBot **stops analyzing new alerts**. Instead, a notification is sent to the chat (Telegram/Slack/Discord) indicating the need to top up. Analysis resumes automatically after the balance is replenished.
+If your balance drops **below zero**, SREBot **stops analyzing new alerts**. Instead, a
+notification is sent to the chat (Telegram/Slack/Discord/Time) indicating the need to top up.
+Analysis resumes automatically after the balance is replenished.
 :::
 
 ---

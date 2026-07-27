@@ -6,9 +6,12 @@ The SREBot platform allows you not only to receive automatic alert analysis (RCA
 
 To ask the bot a question about a specific incident:
 
-1. Find the bot's message with the analysis (RCA) in the Telegram channel or chat.
+1. Find the bot's analysis (RCA) message in Telegram, Slack, Discord, or Time.
 2. Reply to this message (**Reply**) with your question.
 3. The bot will see your reply, show an "Analyzing..." status, and send the clarified information.
+
+In Time, every alert group gets a separate thread. Continue the conversation in that thread so
+the bot retains the context of the correct incident.
 
 ## On-Demand Analysis
 

@@ -25,7 +25,7 @@ Annotations:
 Source: http://prometheus/graph
 ```
 
-### 2. Markdown/Bold (для Slack/Telegram)
+### 2. Markdown/Bold (для Telegram, Slack, Discord и Time)
 Если вы используете жирный шрифт для ключей, бот поймет и такой формат.
 
 **Пример:**

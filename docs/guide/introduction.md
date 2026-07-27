@@ -1,31 +1,35 @@
 ---
 title: Введение в SREBot — AI SRE-копилот для Kubernetes
-description: "Документация SREBot: AI-бот для автоматического анализа первопричин инцидентов в Kubernetes. Интеграция с Telegram, Slack, Discord, Prometheus, Elasticsearch."
+description: "Документация SREBot: AI-бот для автоматического анализа первопричин инцидентов в Kubernetes. Интеграция с Telegram, Slack, Discord, Time, Prometheus, Elasticsearch."
 ---
 
 # Введение в SREBot
 
 **SREBot** — это интеллектуальная платформа для observability и мониторинга, которая помогает быстро находить первопричины инцидентов (Root Cause Analysis).
 
-Она интегрируется напрямую с **Telegram-чатом** вашей команды. Бот деплоится внутри вашей собственной Kubernetes-инфраструктуры, "слушает" сообщения Prometheus Alertmanager и автоматически проводит конфиденциальный анализ метрик (Prometheus) и логов (Elasticsearch).
+Она интегрируется напрямую с командными чатами в **Telegram, Slack, Discord и
+[Time](https://time-messenger.ru/)**. Бот деплоится внутри вашей Kubernetes-инфраструктуры,
+"слушает" сообщения Prometheus Alertmanager и автоматически проводит конфиденциальный анализ
+метрик (Prometheus) и логов (Elasticsearch).
 
 ## Как это работает?
 
 ```mermaid
 sequenceDiagram
     participant Alertmanager
-    participant TelegramChat as Чат команды (Telegram)
+    participant TeamChat as Командный чат
     participant SREBot as SREBot (в вашем K8s)
     participant Backend as AI Backend
 
-    Alertmanager->>TelegramChat: Сообщение с группой алертов
-    SREBot->>TelegramChat: Авторизуется и читает сообщения
+    Alertmanager->>TeamChat: Сообщение с группой алертов
+    SREBot->>TeamChat: Авторизуется и читает сообщения
     SREBot->>Backend: Запрос на анализ
     Backend-->>SREBot: Детальный RCA отчет
-    SREBot-->>TelegramChat: Reply на оригинальное сообщение
+    SREBot-->>TeamChat: Ответ в треде инцидента
 ```
 
-1. **Развертывание (Helm):** Бот SREBot устанавливается в ваш Kubernetes кластер и автоматически регистрируется в целевом Telegram-чате.
+1. **Развертывание (Helm):** Бот SREBot устанавливается в Kubernetes-кластер и подключается к
+   выбранному чату в Telegram, Slack, Discord или Time.
 2. **Получение алерта:** Alertmanager отправляет стандартное сообщение инцидента в общий чат.
 3. **Дедупликация:** Бот перехватывает сообщение. Если инцидент с подобным отпечатком (fingerprint) уже анализируется, бот игнорирует дубликаты.
 4. **Анализ:** AI-агент использует предоставленные доступы (Prometheus URL, Elasticsearch URL) из вашего приватного контура Kubernetes для безопасного поиска информации.
@@ -66,5 +70,6 @@ sequenceDiagram
 | [Настройка Telegram](/guide/telegram-setup)       | BotFather, Chat ID, группы            |
 | [Настройка Slack](/guide/slack-setup)             | Socket Mode, токены, каналы           |
 | [Настройка Discord](/guide/discord-setup)         | Bot Token, permissions, channels      |
+| [Настройка Time](/guide/time-setup)               | Bot Account, токен, ID канала         |
 | [Форматирование алертов](/guide/alert-formatting) | Парсинг, regex, smart parsing         |
 | [Конфигурация](/guide/configuration)              | Env vars, MCP-серверы, ignore rules   |

@@ -13,9 +13,16 @@
 | `SLACK_CHANNEL_ID`    | ID Slack-канала, который бот будет слушать.                                                         | `""`                                                 |
 | `DISCORD_BOT_TOKEN`   | Токен Discord-бота из Developer Portal.                                                             | `""`                                                 |
 | `DISCORD_CHANNEL_ID`  | ID Discord-канала (Snowflake), где бот будет слушать алерты.                                        | `0`                                                  |
+| `TIME_BASE_URL`       | Базовый URL сервера Time без `/api/v4`, например `https://time.example.com`.                         | `""`                                                 |
+| `TIME_TOKEN`          | Bearer-токен учетной записи бота Time.                                                               | `""`                                                 |
+| `TIME_CHANNEL_ID`     | Строковый ID канала Time, где бот будет слушать алерты.                                              | `""`                                                 |
 | `SAAS_AGENT_TOKEN`    | Секретный токен для связи с SREBot Дашбордом.                                                       | `""`                                                 |
 | `SAAS_WS_URL`         | WebSocket URL бэкенда платформы.                                                                    | `wss://api.srebot.site360.tech/api/v1/agent/connect` |
 | `REDIS_URL`           | URL подключения к Redis для дедупликации алертов.                                                   | `redis://localhost:6379/0`                           |
+
+Настройте учетные данные ровно одной чат-платформы. Если одновременно заполнены параметры
+нескольких интеграций, SREBot завершит запуск с ошибкой. Инструкция для Time приведена на странице
+[Настройка интеграции с Time Messenger](/guide/time-setup).
 
 ## Поведение AI (LLM) и парсера
 
