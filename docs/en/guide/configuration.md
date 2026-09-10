@@ -28,12 +28,12 @@ SREBot stops during startup with a configuration error. See
 
 All four chat integrations support `HTTPS_PROXY` in the bot process environment:
 
-| Platform | Connections routed through the proxy |
-| --- | --- |
-| Telegram | Bot API: sending messages and receiving updates (polling) |
-| Slack | Web API and the Socket Mode WebSocket |
-| Discord | REST API, gateway WebSocket, and attachment downloads |
-| Time Messenger | REST API over HTTPS and the event WebSocket |
+| Platform       | Connections routed through the proxy                      |
+| -------------- | --------------------------------------------------------- |
+| Telegram       | Bot API: sending messages and receiving updates (polling) |
+| Slack          | Web API and the Socket Mode WebSocket                     |
+| Discord        | REST API, gateway WebSocket, and attachment downloads     |
+| Time Messenger | REST API over HTTPS and the event WebSocket               |
 
 The proxy must allow HTTP CONNECT to the chat service's HTTPS/WSS endpoints.
 The `http://` prefix describes the connection to the proxy, despite the name `HTTPS_PROXY`:
@@ -86,12 +86,12 @@ passwords; use credentials that do not require this encoding in a URL.
 
 `NO_PROXY` can exclude destinations from proxy routing, but its behavior depends on the SDK:
 
-| Platform | `NO_PROXY` behavior |
-| --- | --- |
-| Telegram | HTTPX applies it to API requests and polling |
-| Slack | The SDK does not apply `NO_PROXY` |
-| Discord | Checked for `discord.com`; the route also applies to the gateway and attachments |
-| Time Messenger | REST checks `TIME_BASE_URL`; the WebSocket uses its library's rules |
+| Platform       | `NO_PROXY` behavior                                                              |
+| -------------- | -------------------------------------------------------------------------------- |
+| Telegram       | HTTPX applies it to API requests and polling                                     |
+| Slack          | The SDK does not apply `NO_PROXY`                                                |
+| Discord        | Checked for `discord.com`; the route also applies to the gateway and attachments |
+| Time Messenger | REST checks `TIME_BASE_URL`; the WebSocket uses its library's rules              |
 
 For Time with `TIME_BASE_URL=http://...`, REST uses `HTTP_PROXY` rather than `HTTPS_PROXY`.
 Proxy variables apply to the entire process: other HTTP/WebSocket clients in the bot may
@@ -107,15 +107,15 @@ with Docker Compose, recreate the container.
 
 ## AI (LLM) and Parser Behavior
 
-| Variable                 | Description                                                                                    | Default       |
-| ------------------------ | ---------------------------------------------------------------------------------------------- | ------------- |
-| `LLM_RESPONSE_LANGUAGE`  | Language of the RCA report. Example: `Russian`, `English`.                                     | `English`     |
+| Variable                 | Description                                                                                                                                                                         | Default       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `LLM_RESPONSE_LANGUAGE`  | Language of the RCA report. Example: `Russian`, `English`.                                                                                                                          | `English`     |
 | `AUTO_ANALYZE_ALERTS`    | Whether to automatically trigger RCA for incoming alerts. If `false`, the bot will only send a short notification, and analysis will run only on explicit user request (via Reply). | `true`        |
-| `ALERT_FINGERPRINT_TTL`  | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated. | `86400` (24h) |
-| `FOLLOWUP_MAX_TURNS`     | Max number of follow-up questions per incident.                                                | `5`           |
-| `FOLLOWUP_TTL`           | Follow-up context window TTL (seconds). After expiry, the bot cannot answer follow-ups.        | `43200` (12h) |
-| `FOLLOWUP_USER_COOLDOWN` | Min seconds between follow-up questions from a single user.                                    | `10`          |
-| `BOT_CONTAINER_NAME`     | Name of the bot's own container (prevents it from reading and analyzing its own logs).         | `srebot`      |
+| `ALERT_FINGERPRINT_TTL`  | Lifespan of an alert in cache (seconds). Identical alerts within this window are deduplicated.                                                                                      | `86400` (24h) |
+| `FOLLOWUP_MAX_TURNS`     | Max number of follow-up questions per incident.                                                                                                                                     | `5`           |
+| `FOLLOWUP_TTL`           | Follow-up context window TTL (seconds). After expiry, the bot cannot answer follow-ups.                                                                                             | `43200` (12h) |
+| `FOLLOWUP_USER_COOLDOWN` | Min seconds between follow-up questions from a single user.                                                                                                                         | `10`          |
+| `BOT_CONTAINER_NAME`     | Name of the bot's own container (prevents it from reading and analyzing its own logs).                                                                                              | `srebot`      |
 
 ## System Flags
 
@@ -141,6 +141,7 @@ Each server supports the following fields:
 | `url`       | The SSE or HTTP endpoint of the MCP server.                                              | `""`    |
 | `transport` | Communication protocol: `sse` (legacy SSE) or `http` (modern Streamable HTTP).           | `sse`   |
 | `read_only` | If `true`, the bot hides all mutation tools from the LLM. Recommended for Elasticsearch. | `false` |
+| `pool_size` | Number of parallel MCP connections to the server. See the tip below.                     | `2`     |
 | `condition` | Label filter. If specified, the server is only used for alerts matching the condition.   | `null`  |
 
 **Example (SSE):**
@@ -161,6 +162,12 @@ mcp_servers:
     transport: "http"
     read_only: true
 ```
+
+> [!TIP]
+> **Parallel connections (`pool_size`):**
+> For each MCP server, the bot maintains a pool of `pool_size` independent connections (default `2`, max `32`). When the AI agent invokes
+> multiple tools of the same server at once, requests are distributed across the pool and executed in parallel instead of queueing.
+> Increase this value if the server supports concurrent sessions and you observe latency under heavy tool usage.
 
 #### Deploying as Sidecars (Helm)
 
