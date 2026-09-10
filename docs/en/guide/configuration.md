@@ -24,6 +24,87 @@ Configure credentials for exactly one chat platform. If more than one integratio
 SREBot stops during startup with a configuration error. See
 [Time Messenger Integration Setup](/en/guide/time-setup) for Time-specific instructions.
 
+## HTTP Proxy {#http-proxy}
+
+All four chat integrations support `HTTPS_PROXY` in the bot process environment:
+
+| Platform | Connections routed through the proxy |
+| --- | --- |
+| Telegram | Bot API: sending messages and receiving updates (polling) |
+| Slack | Web API and the Socket Mode WebSocket |
+| Discord | REST API, gateway WebSocket, and attachment downloads |
+| Time Messenger | REST API over HTTPS and the event WebSocket |
+
+The proxy must allow HTTP CONNECT to the chat service's HTTPS/WSS endpoints.
+The `http://` prefix describes the connection to the proxy, despite the name `HTTPS_PROXY`:
+
+```dotenv
+HTTPS_PROXY=http://proxy.example.com:3128
+```
+
+### Docker Compose
+
+Add the variable to `.env`. The bot's supplied `docker-compose.yml` passes this file
+to the container through `env_file: .env`. Then recreate the bot container:
+
+```bash
+docker compose up -d --force-recreate bot
+```
+
+A `.env` file alone does not pass every variable to a container: a custom Compose file
+must use `env_file` or an appropriate `environment` entry.
+
+### Kubernetes and Local Runs
+
+In Kubernetes, set the variable in the **bot container's** environment. For example,
+use this fragment in the Deployment's container definition:
+
+```yaml
+env:
+  - name: HTTPS_PROXY
+    value: "http://proxy.example.com:3128"
+```
+
+When using Helm, configure the container environment through your chart's supported options.
+The proxy is not a `config.yml` setting: adding it to the `config` section alone does not
+export the variable for the networking SDKs.
+
+For local runs, export the variable before starting the bot:
+
+```bash
+export HTTPS_PROXY='http://proxy.example.com:3128'
+uv run python -m srebot.bot.main
+```
+
+Loading `.env` into application settings does not export variables into the SDK environment either.
+
+### Authentication and Bypass Rules
+
+For a proxy with Basic authentication, use `http://user:password@proxy.example.com:3128`.
+The current Time WebSocket library does not decode percent-encoded proxy usernames or
+passwords; use credentials that do not require this encoding in a URL.
+
+`NO_PROXY` can exclude destinations from proxy routing, but its behavior depends on the SDK:
+
+| Platform | `NO_PROXY` behavior |
+| --- | --- |
+| Telegram | HTTPX applies it to API requests and polling |
+| Slack | The SDK does not apply `NO_PROXY` |
+| Discord | Checked for `discord.com`; the route also applies to the gateway and attachments |
+| Time Messenger | REST checks `TIME_BASE_URL`; the WebSocket uses its library's rules |
+
+For Time with `TIME_BASE_URL=http://...`, REST uses `HTTP_PROXY` rather than `HTTPS_PROXY`.
+Proxy variables apply to the entire process: other HTTP/WebSocket clients in the bot may
+also use them.
+
+### When No Proxy Is Configured
+
+Without proxy environment variables, the bot connects directly. Omitting `HTTPS_PROXY`
+from `.env` does not override a value set in the shell, container, or Pod. SDKs may also
+use `https_proxy`, `HTTP_PROXY`, `ALL_PROXY`, and other proxy variables. To connect directly,
+remove applicable variables from the launch environment and restart the process;
+with Docker Compose, recreate the container.
+
 ## AI (LLM) and Parser Behavior
 
 | Variable                 | Description                                                                                    | Default       |

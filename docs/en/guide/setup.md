@@ -19,6 +19,10 @@ Collect the following structural attributes before performing your deployment wo
 
 One SREBot process can connect to only one chat platform.
 
+If the chat service is accessed through an HTTP proxy, set `HTTPS_PROXY` in the bot
+container's environment. See [HTTP Proxy](./configuration#http-proxy) for examples
+and SDK limitations.
+
 ## Step 2: Deploying the Helm Chart
 
 SREBot supplies a standardized Helm Chart specifically wrapping the operational listener logic.
